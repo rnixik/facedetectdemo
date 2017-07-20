@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>
+      OpenCV face detection (js)
+    </title>
+    <script  type='text/javascript'>
+      var ON_OPENCV_READY = function(){};
+      var Module = {
+          postRun: [] ,
+          onRuntimeInitialized: function() {
+            console.log("Runtime is ready...");
+            ON_OPENCV_READY();
+          },
+          print: (function() {
+            var element = document.getElementById('output');
+            if (element) element.value = ''; // clear browser cache
+            return function(text) {
+              console.log(text);
+              if (element) {
+                element.value += text + "\n";
+                element.scrollTop = element.scrollHeight; // focus on bottom
+              }
+            };
+          })(),
+          printErr: function(text) {
+            console.log(text);
+          },
+          setStatus: function(text) {
+            console.log(text);
+          },
+          totalDependencies: 0
+        };
+
+        Module.setStatus('Downloading...');
+        window.onerror = function(event) {
+          Module.setStatus('Exception thrown, see JavaScript console');
+          Module.setStatus = function(text) {
+            if (text) Module.printErr('[post-exception status] ' + text);
+          };
+        };
+    </script>
+    <script async src="cv.js"></script>
+    <script src="objdetect.min.js"></script>
+  </head>
+  <body>
+      <p id="loading">Loading...</p>
+      <canvas id="canvas1" style="display: none;"></canvas>
+      <canvas id="canvas2"></canvas>
+      <div id="text" style="display: none;">
+        <p>
+          Hi, superbreality.com :)
+        </p>
+        <p>
+          Find some face.
+        </p>
+        <button id="stop">Stop</button>
+      </div>
+
+  </body>
+</html>
