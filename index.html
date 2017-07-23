@@ -1,5 +1,8 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
       OpenCV face detection (js)
     </title>
@@ -40,7 +43,7 @@
         };
     </script>
     <script async src="cv.js"></script>
-    <script src="objdetect.min.js"></script>
+    <script src="objdetect.js"></script>
   </head>
   <body>
       <p id="loading">Loading...</p>
@@ -48,13 +51,14 @@
       <canvas id="canvas2"></canvas>
       <div id="text" style="display: none;">
         <p>
-          Hi, superbreality.com :)
-        </p>
-        <p>
-          Find some face.
+          Find some face in the viewport of the camera.
         </p>
         <button id="stop">Stop</button>
       </div>
 
+      <p>
+          Look at <a href="code.cpp">code.cpp</a>, <a href="haarcascade_frontalface_default.xml">haarcascade_frontalface_default.xml</a>, <a href="haarcascade_eye.xml">haarcascade_eye.xml</a>.
+      </p>
+      <p>© Roman Nix, 2017</p>
   </body>
 </html>
