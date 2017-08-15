@@ -1,5 +1,5 @@
-const width = 640; //320
-const height = 480; //240
+const width = 384; //320
+const height = 216; //240
 		
 function init(){
 
@@ -18,7 +18,7 @@ function init(){
 		    return;
 		}
 		
-		cv.setMinSize(200, 200);
+		cv.setMinSize(130, 130);
 
 		show_image = function(mat, canvas_id) {
 			var data = mat.data(); 	// output is a Uint8Array that aliases directly into the Emscripten heap
@@ -101,16 +101,8 @@ function initWebCamera (onReady) {
 		navigator.mediaDevices.enumerateDevices().then(function(devices) {
 
 			var userMediaConstraints = {
-				audio: false,
-				video: {
-					width: {
-						ideal: width
-					},
-					height: {
-						ideal: height
-					},
-					facingMode: { ideal: "environment" }
-				}
+			    audio: false,
+			    video: {}
 			};
 
 			navigator.mediaDevices.getUserMedia(userMediaConstraints).then(function success(stream) {
