@@ -1,9 +1,10 @@
+const width = 640; //320
+const height = 480; //240
+		
 function init(){
 
 		var videoDom;
 
-		const width = 320; //320
-		const height = 240; //240
 		const updateInterval = 1000/30;
 
 		var canvasInput = document.getElementById('canvas1');
@@ -17,7 +18,7 @@ function init(){
 		    return;
 		}
 		
-		//cv.setMinSize(200, 200);
+		cv.setMinSize(200, 200);
 
 		show_image = function(mat, canvas_id) {
 			var data = mat.data(); 	// output is a Uint8Array that aliases directly into the Emscripten heap
@@ -84,9 +85,6 @@ function init(){
 
 
 function initWebCamera (onReady) {
-		const width = 320;
-		const height = 240;
-
 		var domElement = document.createElement('video');
 		domElement.setAttribute('autoplay', '');
 		domElement.setAttribute('muted', '');
@@ -105,13 +103,7 @@ function initWebCamera (onReady) {
 			var userMediaConstraints = {
 				audio: false,
 				video: {
-					facingMode: 'environment',
-					width: {
-						ideal: width
-					},
-					height: {
-						ideal: height
-					}
+					facingMode: { ideal: "environment" }
 				}
 			};
 
