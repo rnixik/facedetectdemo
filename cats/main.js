@@ -103,6 +103,12 @@ function initWebCamera (onReady) {
 			var userMediaConstraints = {
 				audio: false,
 				video: {
+					width: {
+						ideal: width
+					},
+					height: {
+						ideal: height
+					},
 					facingMode: { ideal: "environment" }
 				}
 			};
