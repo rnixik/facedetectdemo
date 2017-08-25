@@ -12,29 +12,34 @@ function init(){
 		canvasInput.height = height;
 		var canvasInputContext = canvasInput.getContext('2d');
 		
-		var loadDataResult = cv.loadData();
+		var loadDataResult = Module.loadData();
 		if (!loadDataResult) {
 		    console.error("Can't load data");
 		    return;
 		}
 		
-		cv.setMinSize(130, 130);
+		Module.setMinSize(130, 130);
 
-		show_image = function(mat, canvas_id) {
-			var data = mat.data(); 	// output is a Uint8Array that aliases directly into the Emscripten heap
+		show_image = function(data, canvas_id) {
+			//var data = mat.data(); 	// output is a Uint8Array that aliases directly into the Emscripten heap
 
-			channels = mat.channels();
-			channelSize = mat.elemSize1();
+			//channels = mat.channels();
+			//channelSize = mat.elemSize1();
+			channels = 3;
+			channelSize = 8;
 
 			var canvas = document.getElementById(canvas_id);
 
 			ctx = canvas.getContext("2d");
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			canvas.width = mat.cols;
-			canvas.height = mat.rows;
+            //var width = mat.cols;
+            //var height = mat.rows;
+            
+			canvas.width = width;
+			canvas.height = height;
 
-			imdata = ctx.createImageData(mat.cols, mat.rows);
+			imdata = ctx.createImageData(width, height);
 
 			for (var i = 0,j=0; i < data.length; i += channels, j+=4) {
 				imdata.data[j] = data[i];
@@ -52,10 +57,9 @@ function init(){
 		}
 
 		function detect() {
-			var output = new cv.Mat();
-			cv.detectFace(getInput(), output);
+			var output = Module.detectFace(getInput());
 			show_image(output, "canvas2");
-			output.delete();
+			delete output;
 		}
 
 			var afterCameraInit = function() {
