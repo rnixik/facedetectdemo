@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <script src="signaling-web-socket.js"></script>
+    <script src="video-chat.js"></script>
+</head>
+<body>
+Turn address: <input id="turnAddressesEl" value="turn:185.249.253.31"><br>
+Username: <input id="usernameEl" value="1533618520:client01"><br>
+Turn password: <input id="turnPasswordEl" value="X2IKsmNw4/vgO8BP1Otg8s+usF8="><br>
+WS address: <input id="wsAddressEl" value="ws://185.249.253.31:8888/"><br>
+
+<button id="initBtn">Init</button><br>
+<button id="callBtn">Call</button><br>
+
+
+<div style="border: 1px solid black; width: 200px; float: left;">
+    Local:
+    <video id="videol" width="200" height="150"></video>
+</div>
+<div style="border: 1px solid black; width: 200px; float: left;">
+    Remote:
+    <video id="video" width="200" height="150"></video>
+</div>
+<div style="clear: both;"></div>
+
+<textarea id="log" style="width: 600px; height: 300px;"></textarea>
+
+<script>
+    let turnAddresses = ['turn:185.249.253.31']; // prefer port 80, 443. Separate to TCP, UDP
+    let turnUsername = '1533695937:client01';
+    let turnPassword = 'ZHnueyfvswpkbzhydZkaCtZnYpc=';
+    let wsAddress = 'ws://185.249.253.31:8888/'; // prefer port 80, 443
+    let wsChannel = 'vidid-01-employee-05';
+</script>
+
+<script>
+    const turnAddressesEl = document.getElementById('turnAddressesEl');
+    const usernameEl = document.getElementById('usernameEl');
+    const turnPasswordEl = document.getElementById('turnPasswordEl');
+    const wsAddressEl = document.getElementById('wsAddressEl');
+    const callBtn = document.getElementById('callBtn');
+    const videoElementLocal = document.getElementById('videol');
+    const videoElementRemote = document.getElementById('video');
+    const log = document.getElementById('log');
+
+    function trace(line) {
+        log.value += "\n" + line;
+    }
+    log.value = "";
+
+    let videoChat;
+    let signaling;
+
+    initBtn.onclick = () => {
+        if (videoChat) {
+            videoChat.close();
+        }
+        if (signaling) {
+            signaling.disconnect();
+        }
+
+
+        signaling = new SignalingWebSocket();
+        signaling.onError = onError;
+        signaling.onDisconnected = () => {
+            trace("Disconnected from signalling server");
+        };
+        signaling.onConnected = () => {
+            trace("Connected to signalling server");
+        };
+        signaling.connect(wsAddressEl.value, wsChannel);
+
+
+        const videoChatConfig = {
+            turnUsername,
+            turnAddresses,
+            turnPassword,
+            videoElementLocal,
+            videoElementRemote
+        };
+
+        videoChatConfig.turnUsername = usernameEl.value;
+        videoChatConfig.turnAddresses = [turnAddressesEl.value];
+        videoChatConfig.turnPassword = turnPasswordEl.value;
+
+        videoChat = new VideoChat(videoChatConfig, signaling);
+        videoChat.onError = onError;
+        videoChat.onRemoteTrack = (event) => {
+            trace('Got remote stream: ' + event.track.kind);
+        };
+        videoChat.onIceConnetionStateChange = (state) => {
+            trace('New connection state: ' + state);
+        };
+        videoChat.init();
+    };
+
+
+    callBtn.onclick = () => {
+        videoChat.call();
+    };
+
+    function onError(err) {
+        console.error(err);
+        trace(err);
+    }
+
+
+</script>
+</body>
+</html>
