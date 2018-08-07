@@ -45,6 +45,7 @@ function VideoChat(config, signaling) {
                         pc.addTrack(track, stream));
                     await pc.setLocalDescription(await pc.createAnswer());
                     self.signaling.sendDescription(pc.localDescription);
+                    self.videoElementLocal.muted = true;
                     self.videoElementLocal.srcObject = stream;
                     self.videoElementLocal.play();
                 } else if (desc.type === 'answer') {
