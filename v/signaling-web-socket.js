@@ -12,6 +12,7 @@ function SignalingWebSocket() {
     this.onJoined = () => {};
     this.onOtherJoined = () => {};
     this.onOtherLeft = () => {};
+    this.onRemoteMessage = () => {};
 
     this.sendDescription = (description) => {
         self.send('desc', description);
@@ -60,6 +61,7 @@ function SignalingWebSocket() {
                     } else if (data.action === 'left') {
                         self.onOtherLeft(data.payload);
                     }
+                    self.onRemoteMessage(data);
                 } catch (err) {
                     self.onError(err);
                 }
