@@ -12,18 +12,19 @@ Turn password: <input id="turnPasswordEl" value="ZHnueyfvswpkbzhydZkaCtZnYpc="><
 WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
 
 <button id="initBtn">Init</button><br>
-<button id="callBtn">Call</button><br>
 
-
-<div style="border: 1px solid black; width: 200px; float: left;">
-    Local:
-    <video id="videol" width="200" height="150"></video>
+<div id="call-block" style="display: none;">
+    <button id="callBtn">Call</button><br>
+    <div style="border: 1px solid black; width: 200px; float: left;">
+        Local:
+        <video id="videol" width="200" height="150"></video>
+    </div>
+    <div style="border: 1px solid black; width: 200px; float: left;">
+        Remote:
+        <video id="video" width="200" height="150"></video>
+    </div>
+    <div style="clear: both;"></div>
 </div>
-<div style="border: 1px solid black; width: 200px; float: left;">
-    Remote:
-    <video id="video" width="200" height="150"></video>
-</div>
-<div style="clear: both;"></div>
 
 <textarea id="log" style="width: 600px; height: 300px;"></textarea>
 
@@ -41,6 +42,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
     const turnPasswordEl = document.getElementById('turnPasswordEl');
     const wsAddressEl = document.getElementById('wsAddressEl');
     const callBtn = document.getElementById('callBtn');
+    const callBlock = document.getElementById('call-block');
     const videoElementLocal = document.getElementById('videol');
     const videoElementRemote = document.getElementById('video');
     const log = document.getElementById('log');
@@ -54,6 +56,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
     let signaling;
 
     initBtn.onclick = () => {
+        callBlock.style = 'display: block;';
         if (videoChat) {
             videoChat.close();
         }
@@ -69,6 +72,15 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         };
         signaling.onConnected = () => {
             trace("Connected to signalling server");
+        };
+        signaling.onJoined = (num) => {
+            trace("You has joined to signalling server. Clients num: " + num);
+        };
+        signaling.onOtherJoined = (num) => {
+            trace("Someone has joined to signalling server. Clients num: " + num);
+        };
+        signaling.onOtherLeft = (num) => {
+            trace("Someone has left signalling server. Clients num: " + num);
         };
         signaling.connect(wsAddressEl.value, wsChannel);
 
