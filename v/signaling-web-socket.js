@@ -9,6 +9,9 @@ function SignalingWebSocket() {
     this.onDescription = () => {};
     this.onIceCandidate = () => {};
     this.onError = () => {};
+    this.onJoined = () => {};
+    this.onOtherJoined = () => {};
+    this.onOtherLeft = () => {};
 
     this.sendDescription = (description) => {
         self.send('desc', description);
@@ -43,12 +46,19 @@ function SignalingWebSocket() {
                 try {
                     const data = JSON.parse(event.data);
                     if (data.sender === currentUserUUID) {
+                        if (data.action === 'join') {
+                            self.onJoined(data.payload);
+                        }
                         return;
                     }
                     if (data.action === 'desc' && data.payload) {
                         self.onDescription(data.payload);
                     } else if (data.action === 'iceCandidate' && data.payload) {
                         self.onIceCandidate(data.payload);
+                    } else if (data.action === 'join') {
+                        self.onOtherJoined(data.payload);
+                    } else if (data.action === 'left') {
+                        self.onOtherLeft(data.payload);
                     }
                 } catch (err) {
                     self.onError(err);
