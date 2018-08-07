@@ -7,7 +7,7 @@ function VideoChat(config, signaling) {
     this.videoElementLocal = config.videoElementLocal;
     this.videoElementRemote = config.videoElementRemote;
 
-    this.mediaConstraints = {audio: true, video: true};
+    const mediaConstraints = { audio: true, video: true };
     this.signaling = signaling;
 
     this.foundLocalIceCandidates = 0;
@@ -40,7 +40,7 @@ function VideoChat(config, signaling) {
                 if (desc.type === 'offer') {
                     await pc.setRemoteDescription(desc);
                     const stream =
-                        await navigator.mediaDevices.getUserMedia(self.mediaConstraints);
+                        await navigator.mediaDevices.getUserMedia(mediaConstraints);
                     stream.getTracks().forEach((track) =>
                         pc.addTrack(track, stream));
                     await pc.setLocalDescription(await pc.createAnswer());
