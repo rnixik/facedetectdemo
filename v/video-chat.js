@@ -122,6 +122,7 @@ function VideoChat(config, signaling) {
                 await navigator.mediaDevices.getUserMedia(self.mediaConstraints);
             stream.getTracks().forEach((track) =>
                 pc.addTrack(track, stream));
+            self.videoElementLocal.muted = true;
             self.videoElementLocal.srcObject = stream;
             self.videoElementLocal.play();
         } catch (err) {
