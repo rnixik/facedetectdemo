@@ -119,7 +119,7 @@ function VideoChat(config, signaling) {
         try {
             // get local stream, show it in self-view and add it to be sent
             const stream =
-                await navigator.mediaDevices.getUserMedia(self.mediaConstraints);
+                await navigator.mediaDevices.getUserMedia(mediaConstraints);
             stream.getTracks().forEach((track) =>
                 pc.addTrack(track, stream));
             self.videoElementLocal.muted = true;
