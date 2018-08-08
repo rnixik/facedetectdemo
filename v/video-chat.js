@@ -20,6 +20,8 @@ function VideoChat(config, signaling) {
     this.onIceConnetionStateChange = () => {};
 
     this.init = () => {
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
         const peerConnectionConfig = {
             iceServers: [
                 {
