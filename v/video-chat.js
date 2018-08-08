@@ -17,7 +17,7 @@ function VideoChat(config, signaling) {
 
     this.onError = () => {};
     this.onRemoteTrack = () => {};
-    this.onIceConnetionStateChange = () => {};
+    this.onIceConnectionStateChange = () => {};
 
     this.init = () => {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -112,7 +112,7 @@ function VideoChat(config, signaling) {
         };
 
         pc.oniceconnectionstatechange = () => {
-            self.onIceConnetionStateChange(pc.iceConnectionState);
+            self.onIceConnectionStateChange(pc.iceConnectionState);
         };
     };
 
