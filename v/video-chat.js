@@ -19,7 +19,21 @@ function VideoChat(config, signaling) {
     this.onRemoteTrack = () => {};
     this.onIceConnectionStateChange = () => {};
 
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    function getUserMedia(constraints) {
+        return new Promise((resolve, reject) => {
+            navigator.getUserMedia(constraints, (media) => {
+                resolve(media);
+            }, (err) => {
+                reject(err);
+            });
+        });
+    }
+
     this.init = () => {
+
+
         const peerConnectionConfig = {
             iceServers: [
                 {
@@ -40,7 +54,7 @@ function VideoChat(config, signaling) {
                 if (desc.type === 'offer') {
                     await pc.setRemoteDescription(desc);
                     const stream =
-                        await navigator.mediaDevices.getUserMedia(mediaConstraints);
+                        await getUserMedia(mediaConstraints);
                     stream.getTracks().forEach((track) =>
                         pc.addTrack(track, stream));
                     await pc.setLocalDescription(await pc.createAnswer());
@@ -119,7 +133,7 @@ function VideoChat(config, signaling) {
         try {
             // get local stream, show it in self-view and add it to be sent
             const stream =
-                await navigator.mediaDevices.getUserMedia(mediaConstraints);
+                await getUserMedia(mediaConstraints);
             stream.getTracks().forEach((track) =>
                 pc.addTrack(track, stream));
             self.videoElementLocal.muted = true;
