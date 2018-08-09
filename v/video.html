@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <script src="signaling-web-socket.js"></script>
     <script src="video-chat.js"></script>
+    <script src="adapter.js"></script>
 </head>
 <body>
 Turn address: <input id="turnAddressesEl" value="turn:185.249.253.31"><br>
@@ -11,7 +12,7 @@ Username: <input id="usernameEl" value="1535005601"><br>
 Turn password: <input id="turnPasswordEl" value="+DUltSE2kEqMJPpJBT5Nd4kk7hU="><br>
 WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
 
-<button id="initBtn" style="width: 260px; height: 260px;">Init</button><br>
+<button id="initBtn" style="width: 120px; height: 120px;">Init</button><br>
 
 <div id="call-block" style="display: none;">
     <button id="callBtn" style="width: 60px; height: 60px;">Call</button><br>
@@ -29,11 +30,10 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
 <textarea id="log" style="width: 600px; height: 300px;"></textarea>
 
 <script>
-    let turnAddresses = ['turn:185.249.253.31']; // prefer port 80, 443. Separate to TCP, UDP
-    let turnUsername = '1533790313:client01';
-    let turnPassword = 'Pto5mTbpTovQJK1Oa4ktUhdUaM8=';
-    let wsAddress = 'wss://v.ogose.be:443/'; // prefer port 80, 443
-    let wsChannel = 'github-employee-05';
+    let turnAddresses = []; // prefer port 80, 443. Separate to TCP, UDP
+    let turnUsername = '';
+    let turnPassword = '';
+    let wsChannel = 'vid_id_client_69';
 </script>
 
 <script>
@@ -56,11 +56,6 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
     let signaling;
 
     initBtn.onclick = () => {
-        
-        trace('nav ' + JSON.stringify(navigator));
-        trace('md ' + JSON.stringify(navigator.mediaDevices));
-        trace('um ' + JSON.stringify(navigator.mediaDevices.getUserMedia));
-        
         callBlock.style = 'display: block;';
         if (videoChat) {
             videoChat.close();
@@ -122,8 +117,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         console.error(err);
         trace(err);
     }
-    
-    
+
 
 </script>
 </body>
