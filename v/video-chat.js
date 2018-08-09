@@ -16,13 +16,21 @@ function VideoChat(config, signaling) {
     this.offerSent = false;
 
     this.onError = () => {};
+    this.onMediaError = () => {};
     this.onRemoteTrack = () => {};
     this.onIceConnectionStateChange = () => {};
 
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
     function getUserMedia(constraints) {
+        // New API: method with promise
+        if (typeof navigator.mediaDevices !== 'undefined'
+            && typeof navigator.mediaDevices.getUserMedia !== 'undefined') {
+            return navigator.mediaDevices.getUserMedia(constraints);
+        }
+        // Old API (Safari IOS 11_4)
         return new Promise((resolve, reject) => {
+            navigator.getUserMedia = navigator.getUserMedia
+                || navigator.webkitGetUserMedia
+                || navigator.mozGetUserMedia;
             navigator.getUserMedia(constraints, (media) => {
                 resolve(media);
             }, (err) => {
@@ -31,9 +39,16 @@ function VideoChat(config, signaling) {
         });
     }
 
+    function pcAddTrack(peerConnection, track, stream) {
+        // New API
+        if (typeof peerConnection.addTrack !== 'undefined') {
+            return peerConnection.addTrack(track, stream);
+        }
+        // Old API (Edge)
+        return peerConnection.addStream(stream);
+    }
+
     this.init = () => {
-
-
         const peerConnectionConfig = {
             iceServers: [
                 {
@@ -53,10 +68,15 @@ function VideoChat(config, signaling) {
                 // if we get an offer, we need to reply with an answer
                 if (desc.type === 'offer') {
                     await pc.setRemoteDescription(desc);
-                    const stream =
-                        await getUserMedia(mediaConstraints);
+                    let stream;
+                    try {
+                        stream = await getUserMedia(mediaConstraints);
+                    } catch (err) {
+                        self.onMediaError(err);
+                        throw err;
+                    }
                     stream.getTracks().forEach((track) =>
-                        pc.addTrack(track, stream));
+                        pcAddTrack(pc, track, stream));
                     await pc.setLocalDescription(await pc.createAnswer());
                     self.signaling.sendDescription(pc.localDescription);
                     self.videoElementLocal.muted = true;
@@ -132,10 +152,15 @@ function VideoChat(config, signaling) {
         self.isCaller = true;
         try {
             // get local stream, show it in self-view and add it to be sent
-            const stream =
-                await getUserMedia(mediaConstraints);
+            let stream;
+            try {
+                stream = await getUserMedia(mediaConstraints);
+            } catch (err) {
+                self.onMediaError(err);
+                throw err;
+            }
             stream.getTracks().forEach((track) =>
-                pc.addTrack(track, stream));
+                pcAddTrack(pc, track, stream));
             self.videoElementLocal.muted = true;
             self.videoElementLocal.srcObject = stream;
             self.videoElementLocal.play();
