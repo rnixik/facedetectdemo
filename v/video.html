@@ -117,7 +117,10 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         console.error(err);
         trace(err);
     }
-
+    
+    trace('nav' + JSON.stringify(navigator));
+    trace('md' + JSON.stringify(navigator.mediaDevices));
+    trace('um' + JSON.stringify(navigator.mediaDevices.getUserMedia));
 
 </script>
 </body>
