@@ -116,7 +116,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         
         videoChat.onRemoteTrack = (event) => {
             mediaRecorder = new MediaRecorder(event.streams[0]);
-            console.log(event);
+            console.log(event, event.track.kind);
             trace('Got remote stream: ' + event.track.kind);
             
             mediaRecorder.ondataavailable = function(e) {
