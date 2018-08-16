@@ -7,7 +7,7 @@
     <script src="video-chat.js"></script>
 </head>
 <body>
-    <h1>v2</h1>
+    <h1>v3</h1>
 Turn address: <input id="turnAddressesEl" value="turn:185.249.253.31"><br>
 Username: <input id="usernameEl" value="1535005601"><br>
 Turn password: <input id="turnPasswordEl" value="+DUltSE2kEqMJPpJBT5Nd4kk7hU="><br>
@@ -113,8 +113,14 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         
         var mediaRecorder;
         var chunks = [];
+        var gotStream = false;
         
         videoChat.onRemoteTrack = (event) => {
+            if (gotStream) {
+                return;   
+            }
+            gotStream = true;
+            
             mediaRecorder = new MediaRecorder(event.streams[0], { mimeType: 'video/webm; codecs=vp9' });
             console.log(event, event.track.kind);
             trace('Got remote stream: ' + event.track.kind);
