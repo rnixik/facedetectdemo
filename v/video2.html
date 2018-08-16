@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>With adapter</title>
+    <script src="adapter.js"></script>
+    <script src="signaling-web-socket.js"></script>
+    <script src="video-chat.js"></script>
+</head>
+<body>
+Turn address: <input id="turnAddressesEl" value="turn:185.249.253.31"><br>
+Username: <input id="usernameEl" value="1535005601"><br>
+Turn password: <input id="turnPasswordEl" value="+DUltSE2kEqMJPpJBT5Nd4kk7hU="><br>
+WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
+
+<button id="initBtn" style="width: 120px; height: 120px;">Init</button><br>
+
+<div id="call-block" style="display: none;">
+    <button id="callBtn" style="width: 60px; height: 60px;">Call</button><br>
+    <div style="border: 1px solid black; width: 200px; float: left;">
+        Local:
+        <video id="videol" width="200" height="150" playsinline autoplay muted></video>
+    </div>
+    <div style="border: 1px solid black; width: 200px; float: left;">
+        Remote:
+        <video id="video" width="200" height="150" playsinline autoplay></video>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+<textarea id="log" style="width: 600px; height: 300px;"></textarea>
+
+<script>
+    let turnAddresses = []; // prefer port 80, 443. Separate to TCP, UDP
+    let turnUsername = '';
+    let turnPassword = '';
+    let wsChannel = 'vid_id_client_69';
+</script>
+
+<script>
+    const turnAddressesEl = document.getElementById('turnAddressesEl');
+    const usernameEl = document.getElementById('usernameEl');
+    const turnPasswordEl = document.getElementById('turnPasswordEl');
+    const wsAddressEl = document.getElementById('wsAddressEl');
+    const callBtn = document.getElementById('callBtn');
+    const callBlock = document.getElementById('call-block');
+    const videoElementLocal = document.getElementById('videol');
+    const videoElementRemote = document.getElementById('video');
+    const log = document.getElementById('log');
+
+    function trace(line) {
+        log.value += "\n" + line;
+    }
+    log.value = "";
+
+    let videoChat;
+    let signaling;
+
+    initBtn.onclick = () => {
+        callBlock.style = 'display: block;';
+        if (videoChat) {
+            videoChat.close();
+        }
+        if (signaling) {
+            signaling.disconnect();
+        }
+
+
+        signaling = new SignalingWebSocket();
+        signaling.onError = onError;
+        signaling.onDisconnected = () => {
+            trace("Disconnected from signalling server");
+        };
+        signaling.onConnected = () => {
+            trace("Connected to signalling server");
+        };
+        signaling.onJoined = (num) => {
+            trace("You has joined to signalling server. Clients num: " + num);
+        };
+        signaling.onOtherJoined = (num) => {
+            trace("Someone has joined to signalling server. Clients num: " + num);
+        };
+        signaling.onOtherLeft = (num) => {
+            trace("Someone has left signalling server. Clients num: " + num);
+        };
+        signaling.connect(wsAddressEl.value, wsChannel);
+
+
+        const videoChatConfig = {
+            turnUsername,
+            turnAddresses,
+            turnPassword,
+            videoElementLocal,
+            videoElementRemote
+        };
+
+        videoChatConfig.turnUsername = usernameEl.value;
+        videoChatConfig.turnAddresses = [turnAddressesEl.value];
+        videoChatConfig.turnPassword = turnPasswordEl.value;
+
+        videoChat = new VideoChat(videoChatConfig, signaling);
+        videoChat.onError = onError;
+        videoChat.onMediaError = (err) => {
+            trace('Cannot get access to web camera and microphone.');
+        };
+        videoChat.onRemoteTrack = (event) => {
+            console.log(event);
+            trace('Got remote stream: ' + event.track.kind);
+        };
+        videoChat.onIceConnectionStateChange = (state) => {
+            trace('New connection state: ' + state);
+        };
+        videoChat.init();
+    };
+
+
+    callBtn.onclick = () => {
+        videoChat.call();
+    };
+
+    function onError(err) {
+        console.error(err);
+        trace(err);
+    }
+
+
+</script>
+</body>
+</html>
