@@ -133,7 +133,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         
         recordBtn.onlick = () => {
             console.log('stop recording');
-            stopRecordBtn.stop();
+            mediaRecorder.stop();
         };
         
         mediaRecorder.onstop = function(e) {
