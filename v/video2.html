@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Video 2 - recording</title>
+    <title>Video 2 - recording v1</title>
     <script src="signaling-web-socket.js"></script>
     <script src="video-chat.js"></script>
 </head>
@@ -117,9 +117,19 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
             mediaRecorder = new MediaRecorder(event.streams[0]);
             console.log(event);
             trace('Got remote stream: ' + event.track.kind);
+            
             mediaRecorder.ondataavailable = function(e) {
                 chunks.push(e.data);
-            }
+            };
+            
+            mediaRecorder.onstop = function(e) {
+              console.log("data available after MediaRecorder.stop() called.");
+              var blob = new Blob(chunks);
+              chunks = [];
+              var dataURL = window.URL.createObjectURL(blob);
+              preview.src = dataURL;
+              console.log("recorder stopped");
+            };
         };
         videoChat.onIceConnectionStateChange = (state) => {
             trace('New connection state: ' + state);
@@ -136,14 +146,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
             mediaRecorder.stop();
         };
         
-        mediaRecorder.onstop = function(e) {
-          console.log("data available after MediaRecorder.stop() called.");
-          var blob = new Blob(chunks);
-          chunks = [];
-          var dataURL = window.URL.createObjectURL(blob);
-          preview.src = dataURL;
-          console.log("recorder stopped");
-        }
+        
     };
 
 
