@@ -13,6 +13,8 @@ Turn password: <input id="turnPasswordEl" value="+DUltSE2kEqMJPpJBT5Nd4kk7hU="><
 WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
 
 <button id="initBtn" style="width: 120px; height: 120px;">Init</button><br>
+<button id="recordBtn" style="width: 120px; height: 120px;">Record</button><br>
+<button id="stopRecordBtn" style="width: 120px; height: 120px;">Stop record</button><br>
 
 <div id="call-block" style="display: none;">
     <button id="callBtn" style="width: 60px; height: 60px;">Call</button><br>
@@ -25,6 +27,7 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         <video id="video" width="200" height="150" playsinline autoplay></video>
     </div>
     <div style="clear: both;"></div>
+    <video id="preview" width="200" height="150" controls></video>
 </div>
 
 <textarea id="log" style="width: 600px; height: 300px;"></textarea>
@@ -46,6 +49,10 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
     const videoElementLocal = document.getElementById('videol');
     const videoElementRemote = document.getElementById('video');
     const log = document.getElementById('log');
+    const recordBtn = document.getElementById('recordBtn');
+    const stopRecordBtn = document.getElementById('stopRecordBtn');
+    const preview = document.getElementById('preview');
+    
 
     function trace(line) {
         log.value += "\n" + line;
@@ -102,14 +109,41 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         videoChat.onMediaError = (err) => {
             trace('Cannot get access to web camera and microphone.');
         };
+        
+        var mediaRecorder;
+        var chunks = [];
+        
         videoChat.onRemoteTrack = (event) => {
+            mediaRecorder = new MediaRecorder(event.streams[0]);
             console.log(event);
             trace('Got remote stream: ' + event.track.kind);
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            }
         };
         videoChat.onIceConnectionStateChange = (state) => {
             trace('New connection state: ' + state);
         };
         videoChat.init();
+        
+        recordBtn.onlick = () => {
+            console.log('start recording');
+            mediaRecorder.start();
+        };
+        
+        recordBtn.onlick = () => {
+            console.log('stop recording');
+            stopRecordBtn.stop();
+        };
+        
+        mediaRecorder.onstop = function(e) {
+          console.log("data available after MediaRecorder.stop() called.");
+          var blob = new Blob(chunks);
+          chunks = [];
+          var dataURL = window.URL.createObjectURL(blob);
+          preview.src = dataURL;
+          console.log("recorder stopped");
+        }
     };
 
 
