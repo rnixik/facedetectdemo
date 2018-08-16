@@ -2,19 +2,20 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Video 2 - recording v1</title>
+    <title>Video 2 - recording</title>
     <script src="signaling-web-socket.js"></script>
     <script src="video-chat.js"></script>
 </head>
 <body>
+    <h1>v2</h1>
 Turn address: <input id="turnAddressesEl" value="turn:185.249.253.31"><br>
 Username: <input id="usernameEl" value="1535005601"><br>
 Turn password: <input id="turnPasswordEl" value="+DUltSE2kEqMJPpJBT5Nd4kk7hU="><br>
 WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
 
 <button id="initBtn" style="width: 120px; height: 120px;">Init</button><br>
-<button id="recordBtn" style="width: 120px; height: 120px;">Record</button><br>
-<button id="stopRecordBtn" style="width: 120px; height: 120px;">Stop record</button><br>
+<button id="recordBtn" style="width: 60px; height: 60px;">Record</button><br>
+<button id="stopRecordBtn" style="width: 60px; height: 60px;">Stop record</button><br>
 
 <div id="call-block" style="display: none;">
     <button id="callBtn" style="width: 60px; height: 60px;">Call</button><br>
@@ -136,12 +137,12 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         };
         videoChat.init();
         
-        recordBtn.onlick = () => {
+        recordBtn.onclick = () => {
             console.log('start recording');
             mediaRecorder.start();
         };
         
-        recordBtn.onlick = () => {
+        stopRecordBtn.onclick = () => {
             console.log('stop recording');
             mediaRecorder.stop();
         };
