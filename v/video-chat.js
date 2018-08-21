@@ -140,7 +140,7 @@ function VideoChat(config, signaling) {
             }
             self.videoElementRemote.srcObject = event.streams[0];
             self.videoElementRemote.play();
-            trace('Remote width=' + self.videoElementRemote.videoWidth + ';height=' + self.videoElementRemote.videoHeight);
+            console.log('Remote width=' + self.videoElementRemote.videoWidth + ';height=' + self.videoElementRemote.videoHeight);
         };
 
         pc.onicegatheringstatechange = () => {
