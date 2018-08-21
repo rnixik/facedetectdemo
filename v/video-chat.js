@@ -133,11 +133,11 @@ function VideoChat(config, signaling) {
         };
 
         pc.ontrack = (event) => {
-            self.onRemoteTrack(event);
             if (self.videoElementRemote.srcObject) {
                 // don't set srcObject again if it is already set.
                 return;
             }
+            self.onRemoteTrack(event);
             self.videoElementRemote.srcObject = event.streams[0];
             self.videoElementRemote.play();
         };
