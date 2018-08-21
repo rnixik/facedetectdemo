@@ -106,9 +106,9 @@ WS address: <input id="wsAddressEl" value="wss://v.ogose.be:443/"><br>
         videoChat.onRemoteTrack = (event) => {
             trace('Got remote stream: ' + event.track.kind);
             setTimeout(() => {
-                trace('Local width=' + videoElementLocal.videoWidth + ';height=' + videoElementLocal.videoHeight);
-                trace('Remote width=' + videoElementRemote.videoWidth + ';height=' + videoElementRemote.videoHeight);
-            }, 5000);
+                trace('Local: ' + videoElementLocal.videoWidth + 'x' + videoElementLocal.videoHeight);
+                trace('Remote: ' + videoElementRemote.videoWidth + 'x' + videoElementRemote.videoHeight);
+            }, 7000);
         };
         videoChat.onIceConnectionStateChange = (state) => {
             trace('New connection state: ' + state);
