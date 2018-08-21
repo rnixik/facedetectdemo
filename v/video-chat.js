@@ -7,7 +7,14 @@ function VideoChat(config, signaling) {
     this.videoElementLocal = config.videoElementLocal;
     this.videoElementRemote = config.videoElementRemote;
 
-    const mediaConstraints = { audio: true, video: true };
+    const mediaConstraints = {
+        audio: true,
+        video: {
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+        },
+    };
     this.signaling = signaling;
 
     this.foundLocalIceCandidates = 0;
