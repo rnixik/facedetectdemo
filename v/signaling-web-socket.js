@@ -30,6 +30,7 @@ function SignalingWebSocket() {
             data.action = action;
             data.payload = payload;
             webSocket.send(JSON.stringify(data));
+            console.log('send message', data);
         } catch (e) {
             self.onError(e);
         }
@@ -46,6 +47,7 @@ function SignalingWebSocket() {
             webSocket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    console.log('incoming event', data);
                     if (data.sender === currentUserUUID) {
                         if (data.action === 'join') {
                             self.onJoined(data.payload);
